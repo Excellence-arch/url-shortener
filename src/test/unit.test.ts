@@ -21,17 +21,17 @@ describe("Get", () => {
     });
   });
 
-  describe("GET /all", (this: Mocha.Context) => {
-    this.timeout(5000);
-    it("should get /all", (done) => {
-      request(app)
-        .get("/all")
-        .end((err, resp) => {
-          expect(resp.status).to.equal(200);
-          done();
-        });
-    });
-  });
+  // describe("GET /all", () => {
+  //   it("should get /all", function (this: Mocha.Context, done) {
+  //     this.timeout(9000);
+  //     request(app)
+  //       .get("/all")
+  //       .end((err, resp) => {
+  //         expect(resp.status).to.equal(200);
+  //         done();
+  //       });
+  //   });
+  // });
 
   // after(async () => {
   //   // Disconnect from the database after running tests

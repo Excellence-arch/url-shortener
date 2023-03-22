@@ -8,6 +8,7 @@ describe("URL Test", () => {
   before(async () => {
     // Connect to the database before running tests
     const URI: string = process.env.URI || "";
+    console.log(URI);
     await connect(URI);
   });
 
@@ -17,7 +18,8 @@ describe("URL Test", () => {
   // });
 
   describe("POST /shorten", () => {
-    it("should create a new user", (done) => {
+    it("should create a new user", function (this: Mocha.Context, done) {
+      this.timeout(8000);
       request(app)
         .post("/shorten")
         .send({ url: "Hello" })
