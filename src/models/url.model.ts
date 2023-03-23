@@ -8,7 +8,7 @@ export interface IUrl extends Document {
 }
 
 const UrlSchema: Schema = new Schema({
-  url: { type: String, required: true },
+  url: { type: String, required: true, unique: true },
   newUrl: { type: String, unique: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },

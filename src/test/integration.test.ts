@@ -8,6 +8,14 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe("Integration tests", () => {
+  before(async function (this: Mocha.Context) {
+    this.timeout(8000);
+    let resp = await UrlModel.find();
+    if (resp.length > 0) {
+      await UrlModel.deleteMany();
+    }
+    return;
+  });
 
   describe("GET /", () => {
     it("should return a message", async () => {
