@@ -1,43 +1,45 @@
-import { expect } from "chai";
-import { connect, disconnect } from "mongoose";
-import { UrlModel, IUrl } from "../models/url.model";
 import { app } from "../server";
-import request from "supertest";
+import chai from "chai";
+import chaiHttp from "chai-http";
+import { IUrl, UrlModel } from "../models/url.model";
+import { Document, ObjectId } from "mongoose";
 
-describe("URL Test", () => {
-  before(async () => {
-    // Connect to the database before running tests
-    const URI: string = process.env.URI || "";
-    console.log(URI);
-    await connect(URI);
+chai.use(chaiHttp);
+const expect = chai.expect;
+
+describe("Integration tests", () => {
+
+  describe("GET /", () => {
+    it("should return a message", async () => {
+      const res = await chai.request(app).get("/");
+      expect(res.status).to.equal(200);
+      expect(res.body.message).to.equal("App is running on typescript");
+    });
   });
 
-  // after(async () => {
-  //   // Disconnect from the database after running tests
-  //   await disconnect();
-  // });
-
   describe("POST /shorten", () => {
-    it("should create a new user", function (this: Mocha.Context, done) {
-      this.timeout(8000);
-      request(app)
-        .post("/shorten")
-        .send({ url: "Hello" })
-        .end((err, response) => {
-          expect(response.status).to.equal(201);
-          expect(response.body).to.have.property("_id");
-          expect(response.body.url).to.equal("Hello");
-          done();
-        });
+    it("should create a new shortened URL", async () => {
+      const url = "https://www.google.com";
+      const res = await chai.request(app).post("/shorten").send({ url });
+      expect(res.status).to.equal(201);
+      expect(res.body.status).to.equal(201);
+      expect(res.body.message).to.equal("success");
+      expect(res.body.newUrl).to.be.a("string");
+    });
 
-      // Verify that the user has been saved to the database
-      // const savedUser: IUrl | null = await UrlModel.findOne({
-      //   url: "hello",
-      // });
-      // expect(savedUser).to.not.be.null;
-      // expect(savedUser?.url).to.equal("Hello");
-      // expect(savedUser?.newUrl).not.to.equal("Hello");
-      // expect(savedUser?.createdAt).to.equal(Date.now());
+    it("should return an error if no URL is provided", async () => {
+      const res = await chai.request(app).post("/shorten");
+      expect(res.status).to.equal(400);
+      expect(res.body.status).to.equal(400);
+      expect(res.body.message).to.equal("Bad request");
+    });
+  });
+
+  describe("GET /all", () => {
+    it("should return all shortened URLs", async () => {
+      const res = await chai.request(app).get("/all");
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.an("array");
     });
   });
 });

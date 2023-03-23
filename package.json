@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "test": "mocha --require ts-node/register src/test/**/*.test.ts",
+    "test": "mocha --timeout 5000 --require ts-node/register src/test/**/*.test.ts",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\""
   },
   "repository": {
@@ -29,6 +29,7 @@
     "@types/mocha": "^10.0.1",
     "@types/mongoose": "^5.11.97",
     "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mocha": "^10.2.0",

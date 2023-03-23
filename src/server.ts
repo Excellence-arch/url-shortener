@@ -8,6 +8,8 @@ dotenv.config();
 const PORT: any = process.env.PORT || 3000;
 const URI: string = process.env.URI || "";
 
+app.use(express.json({ limit: "50mb" }));
+
 connect(URI);
 
 const createUrl = (url: string): string => {
@@ -20,8 +22,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.post("/shorten", async (req: Request, res: Response) => {
   const url: string = req.body.url || "";
-  console.log(url);
-  console.log(req);
   const newSave: IUrl = new UrlModel({
     url,
     newUrl: await createUrl(url),
@@ -34,11 +34,13 @@ app.post("/shorten", async (req: Request, res: Response) => {
         .send({ status: 201, message: "success", newUrl: user.newUrl });
     })
     .catch((err: Error) => {
-      res.send({ status: 401, message: "failed" });
+      res.status(400).send({ status: 400, message: "Bad request" });
     });
 });
 
-app.get("/all", (req: Request, res: Response) => {});
+app.get("/all", (req: Request, res: Response) => {
+  res.send([]);
+});
 
 app.listen(PORT, () => console.log(`App is listening on ${PORT}`));
 
